@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import requests
 import bs4
+import csv
 
 #scrape cwe for cwe name and description
 
@@ -60,6 +61,9 @@ def main():
     lower_limit = input("[+] Starting record? ")
     upper_limit = input("[+] Ending record? ")
     success = []
+    data = []
+    f = open('cwes.csv', 'wt')
+    writer = csv.writer(f)
 
     for i in range(lower_limit, upper_limit):
         url = 'https://cwe.mitre.org/data/definitions/'+str(i)+'.html'
@@ -68,12 +72,14 @@ def main():
             soup = create_soup(response)
             cwe_num = cwe_num_parser(response, soup)
             description = description_parser(response, cwe_num, soup)
-            #response = make_request(url)
+            writer.writerow((cwe_num, description))
             print '[+] ', cwe_num, ':', description
             success.append(cwe_num)
         except:
             print "[!] Something bad happened"
         print '-'*25
+    f.close()
+
     perc = float(len(success))/float(upper_limit)
     print float(perc)*100
 
