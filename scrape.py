@@ -59,16 +59,23 @@ def main():
     url = 'https://cwe.mitre.org/data/definitions/1.html'
     lower_limit = input("[+] Starting record? ")
     upper_limit = input("[+] Ending record? ")
+    success = []
 
     for i in range(lower_limit, upper_limit):
         url = 'https://cwe.mitre.org/data/definitions/'+str(i)+'.html'
-        response = make_request(url)
-        soup = create_soup(response)
-        cwe_num = cwe_num_parser(response, soup)
-        description = description_parser(response, cwe_num, soup)
-        #response = make_request(url)
-        print '[+] ', cwe_num, ':', description
+        try:
+            response = make_request(url)
+            soup = create_soup(response)
+            cwe_num = cwe_num_parser(response, soup)
+            description = description_parser(response, cwe_num, soup)
+            #response = make_request(url)
+            print '[+] ', cwe_num, ':', description
+            success.append(cwe_num)
+        except:
+            print "[!] Something bad happened"
         print '-'*25
+    perc = float(len(success))/float(upper_limit)
+    print float(perc)*100
 
 if __name__ == '__main__':
     main()
